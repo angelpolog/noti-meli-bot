@@ -18,3 +18,4 @@ primary_region = "bog"
   [[services.ports]]
     handlers = ["tls", "http"]
     port = 443
+    
