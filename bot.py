@@ -1,25 +1,21 @@
-from flask import Flask, request
-import os
-import requests
+from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
-TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN")
-TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID")
-
-@app.route("/")
-def home():
+@app.route("/", methods=["GET"])
+def index():
     return "🤖 Bot de Mercado Libre funcionando"
 
 @app.route("/notify", methods=["POST"])
 def notify():
-    data = request.json
-    message = data.get("message", "Notificación de Mercado Libre")
-    if TELEGRAM_TOKEN and TELEGRAM_CHAT_ID:
-        requests.get(f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage", params={
-            "chat_id": TELEGRAM_CHAT_ID,
-            "text": message
-        })
-    return {"status": "ok"}
+    data = request.get_json()
+    message = data.get("message", "⚠️ Mensaje vacío")
+
+    # Aquí podrías conectar con Telegram
+    print("Mensaje recibido:", message)
+
+    return jsonify({"status": "ok", "message": message})
+
 if __name__ == "__main__":
+    # MUY IMPORTANTE: esto mantiene el proceso escuchando
     app.run(host="0.0.0.0", port=8080)
